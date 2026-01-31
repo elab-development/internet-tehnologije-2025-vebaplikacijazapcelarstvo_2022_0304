@@ -1,8 +1,125 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function HomePage() {
-return (
-<div>
-<h1 className="text-2xl">Dobrodošli u aplikaciju za pčelarstvo 🐝</h1>
-<p className="mt-2">Ovo je početna strana aplikacije.</p>
-</div>
-);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  // Test korisnik
+  const TEST_USER = {
+    email: "pera",
+    password: "pera"
+  };
+
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (email === TEST_USER.email && password === TEST_USER.password) {
+      router.push("/profile");
+    } else {
+      setError("Pogrešan email ili lozinka");
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        {/* Header sa ikonom */}
+        <div className="text-center mb-8">
+        <div className="flex justify-center mb-4">
+          <img 
+              src="/images/logo.png" 
+              alt="Pčelarstvo Logo" 
+              className="w-24 h-24 object-contain"
+            />            
+        </div>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+            Prijavite se na vaš nalog
+          </h1>
+        </div>
+
+        {/* Login forma */}
+        <form onSubmit={handleLogin} className="space-y-5">
+          {/* Email*/}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Email
+            </label>
+            <input
+              type="text"
+              placeholder="Unesite email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all"
+              required
+            />
+          </div>
+
+          {/* Password*/}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Lozinka
+            </label>
+            <input
+              type="password"
+              placeholder="Unesite lozinku"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all"
+              required
+            />
+          </div>
+
+          {/* Error poruka */}
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
+          {/* Prijava dugme */}
+          <button
+            type="submit"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg hover:shadow-xl"
+          >
+            Prijavi se
+          </button>
+
+          {/* Registracija link */}
+          <div className="text-center">
+            <button
+              type="button"
+              className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 text-sm font-medium transition-colors"
+            >
+              Nemate nalog? Registrujte se
+            </button>
+          </div>
+
+          {/* Zaboravljena lozinka */}
+          <div className="text-center">
+            <button
+              type="button"
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-sm transition-colors"
+            >
+              Zaboravili ste lozinku?
+            </button>
+          </div>
+        </form>
+
+        {/* Test kredencijali */}
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1">
+            Test kredencijali:
+          </p>
+          <p className="text-xs text-blue-600 dark:text-blue-400">
+            Email: <strong>pera</strong> | Lozinka: <strong>pera</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

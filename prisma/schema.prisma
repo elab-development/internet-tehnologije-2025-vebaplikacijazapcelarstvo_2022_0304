@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Uloga {
+  ADMIN
+  KORISNIK
+  MENADZER
+}
+
+model Korisnik {
+  id        Int      @id @default(autoincrement())
+  ime       String
+  email     String   @unique
+  sifra     String
+  uloga     Uloga
+
+  kosnice      Kosnica[]
+  aktivnosti   Aktivnost[]
+  komentari    Komentar[]
+  notifikacije Notifikacija[]
+}
+
+model Kosnica {
+  id        Int      @id @default(autoincrement())
+  naziv     String
+  brPcela   Int
+  jacina    String
+  brRamova  Int
+  createdAt DateTime @default(now())
+
+  korisnikId Int
+  korisnik   Korisnik @relation(fields: [korisnikId], references: [id])
+
+  aktivnosti Aktivnost[]
+}
+
+model Aktivnost {
+  id          Int      @id @default(autoincrement())
+  naslov      String
+  tip         String
+  opis        String
+  datumPocetka DateTime
+  izvrsena    Boolean @default(false)
+
+  korisnikId Int
+  kosnicaId  Int
+
+  korisnik Korisnik @relation(fields: [korisnikId], references: [id])
+  kosnica  Kosnica @relation(fields: [kosnicaId], references: [id])
+
+  komentari   Komentar[]
+  notifikacije Notifikacija[]
+}
+
+model Komentar {
+  id        Int      @id @default(autoincrement())
+  sadrzaj   String
+  createdAt DateTime @default(now())
+
+  korisnikId Int
+  aktivnostId Int
+
+  korisnik  Korisnik  @relation(fields: [korisnikId], references: [id])
+  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id])
+}
+
+model Notifikacija {
+  id        Int      @id @default(autoincrement())
+  poruka    String
+  createdAt DateTime @default(now())
+  seen      Boolean  @default(false)
+
+  korisnikId  Int
+  aktivnostId Int
+
+  korisnik  Korisnik  @relation(fields: [korisnikId], references: [id])
+  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id])
+}

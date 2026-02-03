@@ -7,78 +7,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum za uloge korisnika
 enum Uloga {
   ADMIN
   KORISNIK
   MENADZER
 }
 
+// Model za korisnike
 model Korisnik {
   id        Int      @id @default(autoincrement())
   ime       String
   email     String   @unique
-  sifra     String
-  uloga     Uloga
+  sifra     String   // Hesirana lozinka
+  uloga     Uloga    @default(KORISNIK)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  // Relacije
   kosnice      Kosnica[]
   aktivnosti   Aktivnost[]
   komentari    Komentar[]
   notifikacije Notifikacija[]
+
+  @@index([email])
 }
 
+// Model za košnice
 model Kosnica {
   id        Int      @id @default(autoincrement())
   naziv     String
-  brPcela   Int
-  jacina    String
-  brRamova  Int
+  brPcela   Int      // Broj pčela
+  jacina    String   // Jačina košnice (slaba, srednja, jaka)
+  brRamova  Int      // Broj ramova
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   korisnikId Int
-  korisnik   Korisnik @relation(fields: [korisnikId], references: [id])
+  korisnik   Korisnik @relation(fields: [korisnikId], references: [id], onDelete: Cascade)
 
+  // Relacije
   aktivnosti Aktivnost[]
+
+  @@index([korisnikId])
 }
 
+// Model za aktivnosti
 model Aktivnost {
-  id          Int      @id @default(autoincrement())
-  naslov      String
-  tip         String
-  opis        String
+  id           Int      @id @default(autoincrement())
+  naslov       String
+  tip          String   // Tip aktivnosti (pregled, hranjenje, berba, tretman)
+  opis         String   @db.Text
   datumPocetka DateTime
-  izvrsena    Boolean @default(false)
+  izvrsena     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   korisnikId Int
   kosnicaId  Int
 
-  korisnik Korisnik @relation(fields: [korisnikId], references: [id])
-  kosnica  Kosnica @relation(fields: [kosnicaId], references: [id])
+  korisnik Korisnik @relation(fields: [korisnikId], references: [id], onDelete: Cascade)
+  kosnica  Kosnica  @relation(fields: [kosnicaId], references: [id], onDelete: Cascade)
 
-  komentari   Komentar[]
+  // Relacije
+  komentari    Komentar[]
   notifikacije Notifikacija[]
+
+  @@index([korisnikId])
+  @@index([kosnicaId])
+  @@index([datumPocetka])
 }
 
+// Model za komentare
 model Komentar {
   id        Int      @id @default(autoincrement())
-  sadrzaj   String
+  sadrzaj   String   @db.Text
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  korisnikId Int
+  korisnikId  Int
   aktivnostId Int
 
-  korisnik  Korisnik  @relation(fields: [korisnikId], references: [id])
-  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id])
+  korisnik  Korisnik  @relation(fields: [korisnikId], references: [id], onDelete: Cascade)
+  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id], onDelete: Cascade)
+
+  @@index([korisnikId])
+  @@index([aktivnostId])
 }
 
+// Model za notifikacije
 model Notifikacija {
   id        Int      @id @default(autoincrement())
-  poruka    String
+  poruka    String   @db.Text
   createdAt DateTime @default(now())
   seen      Boolean  @default(false)
 
   korisnikId  Int
   aktivnostId Int
 
-  korisnik  Korisnik  @relation(fields: [korisnikId], references: [id])
-  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id])
+  korisnik  Korisnik  @relation(fields: [korisnikId], references: [id], onDelete: Cascade)
+  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id], onDelete: Cascade)
+
+  @@index([korisnikId])
+  @@index([aktivnostId])
 }

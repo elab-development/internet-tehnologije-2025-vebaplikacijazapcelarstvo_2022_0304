@@ -8,20 +8,40 @@ export default function HomePage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Test korisnik
-  const TEST_USER = {
-    email: "pera",
-    password: "pera"
-  };
-
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
-    if (email === TEST_USER.email && password === TEST_USER.password) {
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          sifra: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Greška prilikom prijave");
+        return;
+      }
+
+      // Sačuvaj token u localStorage
+      localStorage.setItem("token", data.token);
+      
+      // Sačuvaj podatke korisnika
+      localStorage.setItem("user", JSON.stringify(data.korisnik));
+
+      // Redirektuj na profil
       router.push("/profile");
-    } else {
-      setError("Pogrešan email ili lozinka");
+    } catch (err: any) {
+      console.error("Greška:", err);
+      setError("Greška prilikom prijave. Pokušajte ponovo.");
     }
   }
 
@@ -30,13 +50,13 @@ export default function HomePage() {
       <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md">
         {/* Header sa ikonom */}
         <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <img 
+          <div className="flex justify-center mb-4">
+            <img 
               src="/images/logo.png" 
               alt="Pčelarstvo Logo" 
               className="w-24 h-24 object-contain"
             />            
-        </div>
+          </div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
             Prijavite se na vaš nalog
           </h1>
@@ -44,13 +64,13 @@ export default function HomePage() {
 
         {/* Login forma */}
         <form onSubmit={handleLogin} className="space-y-5">
-          {/* Email*/}
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email
             </label>
             <input
-              type="text"
+              type="email"
               placeholder="Unesite email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -59,7 +79,7 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Password*/}
+          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Lozinka
@@ -93,6 +113,7 @@ export default function HomePage() {
           <div className="text-center">
             <button
               type="button"
+              onClick={() => router.push("/register")}
               className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 text-sm font-medium transition-colors"
             >
               Nemate nalog? Registrujte se
@@ -109,16 +130,6 @@ export default function HomePage() {
             </button>
           </div>
         </form>
-
-        {/* Test kredencijali */}
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1">
-            Test kredencijali:
-          </p>
-          <p className="text-xs text-blue-600 dark:text-blue-400">
-            Email: <strong>pera</strong> | Lozinka: <strong>pera</strong>
-          </p>
-        </div>
       </div>
     </div>
   );

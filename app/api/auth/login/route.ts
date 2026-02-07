@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     })
 
     // 7. Vrati token i podatke korisnika
-    return NextResponse.json(
+    const response =  NextResponse.json(
       {
         message: 'Uspešno ste se prijavili.',
         token,
@@ -64,6 +64,16 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     )
+    // Postavi HttpOnly cookie sa tokenom
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 7 dana
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     console.error('Greška prilikom prijave:', error)
     return NextResponse.json(

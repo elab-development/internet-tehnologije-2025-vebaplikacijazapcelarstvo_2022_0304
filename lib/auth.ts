@@ -36,14 +36,32 @@ export function createToken(payload: JWTPayload): string {
 
 //Verifikuje JWT token
 
-export function verifyToken(token: string): JWTPayload | null {
-  try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload
-  } catch (error) {
-    console.error('Token verification failed:', error)
-    return null
-  }
-}
+//Verifikuje JWT token
+// export function verifyToken(token: string): JWTPayload | null {
+//   try {
+//     console.log('🔐 Verifying token with secret:', JWT_SECRET.substring(0, 10) + '...');
+//     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+//     console.log('✅ Token successfully verified:', decoded);
+//     return decoded;
+//   } catch (error) {
+//     if (error instanceof jwt.TokenExpiredError) {
+//       console.error('❌ Token expired:', error.message);
+//     } else if (error instanceof jwt.JsonWebTokenError) {
+//       console.error('❌ Invalid token:', error.message);
+//     } else {
+//       console.error('❌ Token verification failed:', error);
+//     }
+//     return null;
+//   }
+// }
+ export function verifyToken(token: string): JWTPayload | null {
+   try {
+     return jwt.verify(token, JWT_SECRET) as JWTPayload
+   } catch (error) {
+     console.error('Token verification failed:', error)
+     return null
+   }
+ }
 
 //Izvlači token iz Authorization header-a
  

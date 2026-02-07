@@ -95,7 +95,7 @@ export default function AddHivePage() {
       // Ako je problem sa sesijom, redirect na login nakon 3 sekunde
       if (err.message.includes("sesija") || err.message.includes("prijavite")) {
         setTimeout(() => {
-          router.push("/login");
+          router.push("/");
         }, 3000);
       }
     } finally {

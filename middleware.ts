@@ -1,3 +1,6 @@
+// Force Node.js runtime instead of Edge Runtime
+export const runtime = 'nodejs';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 

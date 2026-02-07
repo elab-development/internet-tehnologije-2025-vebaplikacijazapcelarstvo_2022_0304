@@ -26,13 +26,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Učitaj košnice BEZ proizvodnjaMeda jer taj model ne postoji
     const kosnice = await prisma.kosnica.findMany({
       where: {
         korisnikId: decoded.userId,
       },
       include: {
         aktivnosti: true,
-        proizvodnjaMeda: true,
+        // proizvodnjaMeda: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
     }
 
     const validneJacine = ['SLABA', 'SREDNJA', 'JAKA'];
-    if (!validneJacine.includes(jacina)) {
+    if (!validneJacine.includes(jacina.toUpperCase())) {
       return NextResponse.json(
         { error: 'Jačina mora biti: SLABA, SREDNJA ili JAKA.' },
         { status: 400 }
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
       data: {
         naziv,
         brPcela: parseInt(brPcela),
-        jacina,
+        jacina: jacina.toUpperCase(),
         brRamova: parseInt(brRamova),
         korisnikId: decoded.userId,
       },

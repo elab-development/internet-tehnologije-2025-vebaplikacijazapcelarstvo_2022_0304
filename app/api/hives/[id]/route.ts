@@ -1,3 +1,4 @@
+// app/api/hives/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
@@ -37,9 +38,9 @@ export async function GET(
         aktivnosti: {
           orderBy: { datumPocetka: 'desc' },
         },
-        proizvodnjaMeda: {
-          orderBy: { datum: 'desc' },
-        },
+        // proizvodnjaMeda: {  // OBRISANO - ne postoji u šemi
+        //   orderBy: { datum: 'desc' },
+        // },
       },
     });
 
@@ -111,7 +112,7 @@ export async function PUT(
       data: {
         ...(naziv && { naziv }),
         ...(brPcela && { brPcela: parseInt(brPcela) }),
-        ...(jacina && { jacina }),
+        ...(jacina && { jacina: jacina.toUpperCase() }),
         ...(brRamova && { brRamova: parseInt(brRamova) }),
       },
     });

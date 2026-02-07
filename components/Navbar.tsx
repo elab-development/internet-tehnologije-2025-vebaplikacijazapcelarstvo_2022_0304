@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 
 
@@ -16,11 +17,15 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-amber-500 text-white p-4 shadow-lg">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-amber-500 text-white h-14 shadow-lg">
+      <div className="container mx-auto px-2 h-full flex justify-between items-center">
         {/* Logo */}
-        <Link href="/profile" className="text-2xl font-bold hover:text-amber-100 transition-colors">
-        Pčelarstvo
+        <Link href="/profile" className="flex items-center gap-2 text-2xl font-bold hover:text-amber-100 transition-colors">
+        <div className="bg-white/80 backdrop-blur rounded-full p-1 shadow">
+          <Image src="/images/logo.png" alt="Košnica PLUS logo" width={36} height={36}/>
+        </div>
+        
+        <span>Košnica PLUS</span>
         </Link>
 
         {/* Navigacioni linkovi */}

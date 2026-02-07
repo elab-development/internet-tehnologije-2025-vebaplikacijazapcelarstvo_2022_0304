@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pčelarstvo App",
+  title: "Košnica PLUS",
   description: "Veb aplikacija za upravljanje košnicama i aktivnostima",
 };
 

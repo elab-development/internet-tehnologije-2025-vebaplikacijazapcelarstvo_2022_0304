@@ -104,6 +104,11 @@ export default function HivesPage() {
     setSelectedHive(null);
   };
 
+  const handleHiveDeleted = (deletedHiveId: number) => {
+  setHives(hives.filter(h => h.id !== deletedHiveId));
+  setFilteredHives(filteredHives.filter(h => h.id !== deletedHiveId));
+};
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -225,6 +230,7 @@ export default function HivesPage() {
               key={hive.id} 
               hive={hive}
               onDetailsClick={() => handleDetailsClick(hive)}
+              onHiveDeleted={handleHiveDeleted}
             />
           ))}
         </div>
@@ -232,7 +238,11 @@ export default function HivesPage() {
 
       {/* Modal za detalje košnice */}
       {isModalOpen && selectedHive && (
-        <HiveModal hive={selectedHive} onClose={handleCloseModal} />
+        <HiveModal 
+          hive={selectedHive} 
+          onClose={handleCloseModal}
+          onHiveDeleted={handleHiveDeleted}
+        />
       )}
     </div>
   );

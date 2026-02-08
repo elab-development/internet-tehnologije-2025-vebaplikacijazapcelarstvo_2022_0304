@@ -135,8 +135,9 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: { id: string } }
 ) {
+  const params = await props.params;
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {

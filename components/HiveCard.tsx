@@ -12,6 +12,7 @@ type HiveCardProps = {
     createdAt: string;
   };
   onDetailsClick: () => void;
+  onHiveDeleted: (id: number) => void;
 };
 
 export default function HiveCard({ hive, onDetailsClick }: HiveCardProps) {

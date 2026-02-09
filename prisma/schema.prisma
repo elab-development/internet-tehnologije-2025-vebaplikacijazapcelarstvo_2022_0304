@@ -19,6 +19,7 @@ model Korisnik {
   id        Int      @id @default(autoincrement())
   ime       String
   email     String   @unique
+  pol       Boolean?
   sifra     String   // Hesirana lozinka
   uloga     Uloga    @default(KORISNIK)
   createdAt DateTime @default(now())
@@ -36,9 +37,9 @@ model Korisnik {
 // Model za košnice
 model Kosnica {
   id        Int      @id @default(autoincrement())
-  naziv     String
+  naziv     String   @db.VarChar(100)
   brPcela   Int      // Broj pčela
-  jacina    String   // Jačina košnice (slaba, srednja, jaka)
+  jacina    String   @default("srednja")// Jačina košnice (slaba, srednja, jaka)
   brRamova  Int      // Broj ramova
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,12 +51,13 @@ model Kosnica {
   aktivnosti Aktivnost[]
 
   @@index([korisnikId])
+  @@index([naziv])
 }
 
 // Model za aktivnosti
 model Aktivnost {
   id           Int      @id @default(autoincrement())
-  naslov       String
+  naslov       String   @db.VarChar(100)
   tip          String   // Tip aktivnosti (pregled, hranjenje, berba, tretman)
   opis         String   @db.Text
   datumPocetka DateTime

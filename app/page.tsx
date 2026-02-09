@@ -121,14 +121,14 @@ export default function HomePage() {
           </div>
 
           {/* Zaboravljena lozinka */}
-          <div className="text-center">
+          {/* <div className="text-center">
             <button
               type="button"
               className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-sm transition-colors"
             >
               Zaboravili ste lozinku?
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>

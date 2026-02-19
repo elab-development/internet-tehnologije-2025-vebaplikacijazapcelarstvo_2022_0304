@@ -93,9 +93,13 @@ export default function HivesPage() {
   };
 
   const handleHiveDeleted = (deletedHiveId: number) => {
-  setHives(hives.filter(h => h.id !== deletedHiveId));
-  setFilteredHives(filteredHives.filter(h => h.id !== deletedHiveId));
-};
+    setHives(hives.filter(h => h.id !== deletedHiveId));
+    setFilteredHives(filteredHives.filter(h => h.id !== deletedHiveId));
+  };
+  const handleHiveUpdated = (updatedHive: Hive) => {
+    setHives(hives.map(h => h.id === updatedHive.id ? updatedHive : h));
+    setFilteredHives(filteredHives.map(h => h.id === updatedHive.id ? updatedHive : h));
+  };
 
   if (loading) {
     return (
@@ -215,10 +219,11 @@ export default function HivesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredHives.map((hive) => (
             <HiveCard 
-              key={hive.id} 
-              hive={hive}
-              onDetailsClick={() => handleDetailsClick(hive)}
-              onHiveDeleted={handleHiveDeleted}
+            key={hive.id} 
+            hive={hive}
+            onDetailsClick={() => handleDetailsClick(hive)}
+            onHiveDeleted={handleHiveDeleted}
+            onHiveUpdated={handleHiveUpdated}
             />
           ))}
         </div>
@@ -230,6 +235,7 @@ export default function HivesPage() {
           hive={selectedHive} 
           onClose={handleCloseModal}
           onHiveDeleted={handleHiveDeleted}
+          onHiveUpdated={handleHiveUpdated}
         />
       )}
     </div>

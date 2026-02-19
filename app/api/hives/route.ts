@@ -44,23 +44,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json(
-        { error: 'Niste autentifikovani.' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Nevažeći token.' },
-        { status: 401 }
-      );
-    }
+    const userId = parseInt(request.headers.get('x-user-id')!);
 
     const body = await request.json();
     const { naziv, brPcela, jacina, brRamova } = body;
@@ -86,7 +70,7 @@ export async function POST(request: NextRequest) {
         brPcela: parseInt(brPcela),
         jacina: jacina.toUpperCase(),
         brRamova: parseInt(brRamova),
-        korisnikId: decoded.userId,
+        korisnikId: userId,
       },
     });
 

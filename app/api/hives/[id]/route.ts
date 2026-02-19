@@ -1,38 +1,23 @@
 // app/api/hives/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
 
 /**
  * GET /api/hives/:id
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props : { params: { id: string } }
 ) {
+  const params = await props.params;
+
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json(
-        { error: 'Niste autentifikovani.' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Nevažeći token.' },
-        { status: 401 }
-      );
-    }
+    const userId = parseInt(request.headers.get('x-user-id')!);
 
     const kosnica = await prisma.kosnica.findFirst({
       where: {
         id: parseInt(params.id),
-        korisnikId: decoded.userId,
+        korisnikId: userId,
       },
       include: {
         aktivnosti: {
@@ -69,26 +54,12 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: { id: string } }
 ) {
+  const params = await props.params;
+
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json(
-        { error: 'Niste autentifikovani.' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Nevažeći token.' },
-        { status: 401 }
-      );
-    }
+    const userId = parseInt(request.headers.get('x-user-id')!);
 
     const body = await request.json();
     const { naziv, brPcela, jacina, brRamova } = body;
@@ -96,7 +67,7 @@ export async function PUT(
     const kosnica = await prisma.kosnica.findFirst({
       where: {
         id: parseInt(params.id),
-        korisnikId: decoded.userId,
+        korisnikId: userId,
       },
     });
 

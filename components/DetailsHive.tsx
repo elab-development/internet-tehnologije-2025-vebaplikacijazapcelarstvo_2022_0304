@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import EditHiveModal from "./EditHiveModal";
 
 interface HiveModalProps {
   hive: {
@@ -15,13 +16,15 @@ interface HiveModalProps {
   };
   onClose: () => void;
   onHiveDeleted: (id: number) => void;
+  onHiveUpdated: (updatedHive: any) => void;
 }
 
-export default function HiveModal({ hive, onClose, onHiveDeleted }: HiveModalProps) {
+export default function HiveModal({ hive, onClose, onHiveDeleted, onHiveUpdated }: HiveModalProps) {
 
   const router = useRouter();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   // Boje na osnovu jačine
   const getJacinaColor = (jacina: string) => {
@@ -45,18 +48,11 @@ const handleConfirmDelete = async () => {
   setIsDeleting(true);
   
   try {
-    const token = localStorage.getItem("token");
     
-    if (!token) {
-      alert("Niste prijavljeni.");
-      return;
-    }
 
     const response = await fetch(`/api/hives/${hive.id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: 'include',
     });
 
     const data = await response.json();
@@ -176,9 +172,8 @@ const handleCancelDelete = () => {
               {isDeleting ? "Brisanje..." : "🗑️ Obriši košnicu"}
             </button>
           <button
-            onClick={() => window.location.href = `/hives/${hive.id}/edit`}
-            className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-md hover:shadow-lg"
-          >
+            onClick={() => setShowEditModal(true)}
+            className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors shadow-md hover:shadow-lg">
             Izmeni košnicu
           </button>
         </div>
@@ -191,6 +186,18 @@ const handleCancelDelete = () => {
           itemName={hive.naziv}
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
+        />
+      )}
+
+      {showEditModal && (
+        <EditHiveModal
+          hive={hive}
+          onConfirm={(updatedHive) => {
+            setShowEditModal(false);
+            onHiveUpdated(updatedHive);
+            onClose();
+          }}
+          onCancel={() => setShowEditModal(false)}
         />
       )}
       </>

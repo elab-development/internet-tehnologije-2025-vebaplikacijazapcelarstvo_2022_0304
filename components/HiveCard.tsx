@@ -1,21 +1,28 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
 
-type HiveCardProps = {
-  hive: {
-    id: number;
-    naziv: string;
-    brPcela: number;
-    jacina: string;
-    brRamova: number;
-    createdAt: string;
-  };
-  onDetailsClick: () => void;
-  onHiveDeleted: (id: number) => void;
+import Image from "next/image";
+import EditHiveModal from "./EditHiveModal";
+import { useState } from "react";
+
+type Hive = {
+  id: number;
+  naziv: string;
+  brPcela: number;
+  jacina: string;
+  brRamova: number;
+  createdAt: string;
 };
 
-export default function HiveCard({ hive, onDetailsClick }: HiveCardProps) {
+type HiveCardProps = {
+  hive: Hive;
+  onDetailsClick: () => void;
+  onHiveDeleted: (id: number) => void;
+  onHiveUpdated: (updatedHive: Hive) => void; 
+};
+
+export default function HiveCard({ hive, onDetailsClick, onHiveUpdated }: HiveCardProps) {
+
+  const [showEditModal, setShowEditModal] = useState(false);
   // Boje na osnovu jačine
   const getJacinaColor = (jacina: string) => {
     switch (jacina.toUpperCase()) {
@@ -44,6 +51,7 @@ export default function HiveCard({ hive, onDetailsClick }: HiveCardProps) {
   };
 
   return (
+    <>
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-2xl transition-all transform hover:-translate-y-1">
       {/* Slika košnice */}
       <div className="relative h-48 bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 flex items-center justify-center overflow-hidden">
@@ -78,13 +86,26 @@ export default function HiveCard({ hive, onDetailsClick }: HiveCardProps) {
           >
             Detalji
           </button>
-          <Link href={`/hives/${hive.id}/edit`} className="flex-1">
-            <button className="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold py-3 rounded-xl transition-colors shadow-md hover:shadow-lg">
+          <button
+            onClick={() => setShowEditModal(true)}
+            className="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold py-3 rounded-xl transition-colors shadow-md hover:shadow-lg"
+            >
               Izmeni
             </button>
-          </Link>
         </div>
       </div>
     </div>
+
+    {showEditModal && (
+      <EditHiveModal
+        hive={hive}
+        onConfirm={(updatedHive) => {
+          setShowEditModal(false);
+          onHiveUpdated(updatedHive);
+        }}
+        onCancel={() => setShowEditModal(false)}
+      />
+    )}
+    </>
   );
 }

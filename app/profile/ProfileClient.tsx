@@ -37,9 +37,6 @@ export default function ProfileClient({ user, stats, notifications }: ProfileCli
       });
 
       if (response.ok) {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('token');
-        }
         
         router.push('/');
         router.refresh();

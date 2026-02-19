@@ -31,12 +31,6 @@ export default function HomePage() {
         return;
       }
 
-      // Sačuvaj token u localStorage
-      localStorage.setItem("token", data.token);
-      
-      // Sačuvaj podatke korisnika
-      localStorage.setItem("user", JSON.stringify(data.korisnik));
-
       // Redirektuj na profil
       router.push("/profile");
     } catch (err: any) {

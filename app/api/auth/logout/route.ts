@@ -6,12 +6,12 @@ import { NextRequest, NextResponse } from 'next/server'
  */
 export async function POST(request: NextRequest) {
   try {
-    return NextResponse.json(
-      {
-        message: 'Uspešno ste se odjavili.',
-      },
-      { status: 200 }
-    )
+    const response = NextResponse.json(
+      { message: 'Uspešno ste se odjavili.' },
+       { status: 200 }
+      )
+      response.cookies.delete('token')
+return response
   } catch (error) {
     console.error('Greška prilikom odjave:', error)
     return NextResponse.json(

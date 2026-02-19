@@ -15,10 +15,8 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
   
   if (isProtectedRoute) {
-    
 
-    const authHeader = request.headers.get('authorization');
-    const token = authHeader?.replace('Bearer ', '');
+    const token = request.cookies.get('token')?.value;
 
     if (!token) {
       return NextResponse.json(

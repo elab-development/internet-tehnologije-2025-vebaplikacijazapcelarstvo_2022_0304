@@ -10,28 +10,13 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json(
-        { error: 'Niste autentifikovani.' },
-        { status: 401 }
-      );
-    }
 
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Nevažeći token.' },
-        { status: 401 }
-      );
-    }
+    const userId = parseInt(request.headers.get('x-user-id')!);
 
     const aktivnost = await prisma.aktivnost.findFirst({
       where: {
         id: parseInt(params.id),
-        korisnikId: decoded.userId,
+        korisnikId: userId,
       },
       include: {
         kosnica: true,

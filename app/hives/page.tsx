@@ -33,20 +33,8 @@ export default function HivesPage() {
   async function fetchHives() {
     try {
       setLoading(true);
-      
-      const token = localStorage.getItem("token");
-      
-      if (!token) {
-        setError("Niste prijavljeni. Molimo prijavite se.");
-        setLoading(false);
-        return;
-      }
 
-      const response = await fetch("/api/hives", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch("/api/hives", {});
 
       const data = await response.json();
 

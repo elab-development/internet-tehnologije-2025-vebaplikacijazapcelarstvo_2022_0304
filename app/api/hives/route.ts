@@ -8,28 +8,13 @@ import { verifyToken } from '@/lib/auth';
  */
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      return NextResponse.json(
-        { error: 'Niste autentifikovani.' },
-        { status: 401 }
-      );
-    }
 
-    const token = authHeader.replace('Bearer ', '');
-    const decoded = verifyToken(token);
-
-    if (!decoded) {
-      return NextResponse.json(
-        { error: 'Nevažeći token.' },
-        { status: 401 }
-      );
-    }
+    const userId = parseInt(request.headers.get('x-user-id')!);
 
     // Učitaj košnice BEZ proizvodnjaMeda jer taj model ne postoji
     const kosnice = await prisma.kosnica.findMany({
       where: {
-        korisnikId: decoded.userId,
+        korisnikId: userId,
       },
       include: {
         aktivnosti: true,

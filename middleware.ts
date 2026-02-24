@@ -9,6 +9,7 @@ export function middleware(request: NextRequest) {
     '/api/hives',
     '/api/activities', 
     '/api/comments',
+    '/api/auth/me',
   ];
 
   const path = request.nextUrl.pathname;

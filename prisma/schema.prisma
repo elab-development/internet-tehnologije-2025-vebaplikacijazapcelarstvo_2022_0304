@@ -49,6 +49,7 @@ model Kosnica {
 
   // Relacije
   aktivnosti Aktivnost[]
+  komentari  Komentar[]
 
   @@index([korisnikId])
   @@index([naziv])
@@ -72,7 +73,6 @@ model Aktivnost {
   kosnica  Kosnica  @relation(fields: [kosnicaId], references: [id], onDelete: Cascade)
 
   // Relacije
-  komentari    Komentar[]
   notifikacije Notifikacija[]
 
   @@index([korisnikId])
@@ -84,17 +84,18 @@ model Aktivnost {
 model Komentar {
   id        Int      @id @default(autoincrement())
   sadrzaj   String   @db.Text
+  jacinaKosnice  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   korisnikId  Int
-  aktivnostId Int
+  kosnicaId Int
 
   korisnik  Korisnik  @relation(fields: [korisnikId], references: [id], onDelete: Cascade)
-  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id], onDelete: Cascade)
+  kosnica  Kosnica  @relation(fields: [kosnicaId], references: [id], onDelete: Cascade)
 
   @@index([korisnikId])
-  @@index([aktivnostId])
+  @@index([kosnicaId])
 }
 
 // Model za notifikacije

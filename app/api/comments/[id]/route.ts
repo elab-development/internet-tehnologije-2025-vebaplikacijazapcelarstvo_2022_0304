@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
 
-/**
- * DELETE /api/comments/:id
- */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    
     const userId = parseInt(request.headers.get('x-user-id')!);
 
     const komentar = await prisma.komentar.findFirst({
@@ -31,9 +26,7 @@ export async function DELETE(
       where: { id: parseInt(params.id) },
     });
 
-    return NextResponse.json({
-      message: 'Komentar uspešno obrisan.',
-    });
+    return NextResponse.json({ message: 'Komentar uspešno obrisan.' });
   } catch (error) {
     console.error('Greška prilikom brisanja komentara:', error);
     return NextResponse.json(

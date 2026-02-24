@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
 
 /**
  * POST /api/comments
@@ -11,22 +10,25 @@ export async function POST(request: NextRequest) {
     const userId = parseInt(request.headers.get('x-user-id')!);
 
     const body = await request.json();
-    const { sadrzaj, aktivnostId } = body;
+    const { sadrzaj, kosnicaId  } = body;
 
-    if (!sadrzaj || !aktivnostId) {
+    if (!sadrzaj || !kosnicaId ) {
       return NextResponse.json(
-        { error: 'Sadržaj i ID aktivnosti su obavezni.' },
+        { error: 'Sadržaj i ID košnica su obavezni.' },
         { status: 400 }
       );
     }
 
-    const aktivnost = await prisma.aktivnost.findUnique({
-      where: { id: parseInt(aktivnostId) },
+    const kosnica = await prisma.kosnica.findFirst({
+      where: {
+        id: parseInt(kosnicaId),
+        korisnikId: userId,
+      },
     });
 
-    if (!aktivnost) {
+    if (!kosnica) {
       return NextResponse.json(
-        { error: 'Aktivnost nije pronađena.' },
+        { error: 'Košnica nije pronađena.' },
         { status: 404 }
       );
     }
@@ -35,7 +37,8 @@ export async function POST(request: NextRequest) {
       data: {
         sadrzaj,
         korisnikId: userId,
-        aktivnostId: parseInt(aktivnostId),
+        kosnicaId: parseInt(kosnicaId),
+        jacinaKosnice: kosnica.jacina,
       },
       include: {
         korisnik: {

@@ -10,6 +10,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.20",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/list": "^6.1.20",
+    "@fullcalendar/react": "^6.1.20",
+    "@fullcalendar/timegrid": "^6.1.20",
     "@remixicon/react": "^4.9.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
@@ -21,6 +27,7 @@
     "pg": "^8.18.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "recharts": "^3.7.0",
     "tsx": "^4.21.0"
   },
   "devDependencies": {

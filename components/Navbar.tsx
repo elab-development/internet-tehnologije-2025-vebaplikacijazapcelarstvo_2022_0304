@@ -14,6 +14,7 @@ export default function Navbar() {
     { href: "/hives", label: "Košnice" },
     { href: "/activities", label: "Aktivnosti" },
     { href: "/profile", label: "Profil" },
+    { href: "/statistics", label: "Statistika" },
   ];
 
   return (

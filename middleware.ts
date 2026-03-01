@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
     '/api/activities', 
     '/api/comments',
     '/api/auth/me',
+    '/api/notifications',
   ];
 
   const path = request.nextUrl.pathname;

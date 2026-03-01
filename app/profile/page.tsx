@@ -50,6 +50,39 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
+// Automatski kreiraj podsjetnike za aktivnosti danas
+  const danas = new Date();
+  const pocetakDana = new Date(danas.getFullYear(), danas.getMonth(), danas.getDate(), 0, 0, 0);
+  const krajDana = new Date(danas.getFullYear(), danas.getMonth(), danas.getDate(), 23, 59, 59);
+
+  const aktivnostiDanas = await prisma.aktivnost.findMany({
+    where: {
+      korisnikId: korisnik.id,
+      izvrsena: false,
+      datumPocetka: { gte: pocetakDana, lte: krajDana },
+    },
+  });
+
+  for (const aktivnost of aktivnostiDanas) {
+    const postojeca = await prisma.notifikacija.findFirst({
+      where: {
+        korisnikId: korisnik.id,
+        aktivnostId: aktivnost.id,
+        createdAt: { gte: pocetakDana },
+      },
+    });
+
+    if (!postojeca) {
+      await prisma.notifikacija.create({
+        data: {
+          poruka: `Podsetnik: Danas imate zakazanu aktivnost "${aktivnost.naslov}" (${aktivnost.tip}).`,
+          korisnikId: korisnik.id,
+          aktivnostId: aktivnost.id,
+        },
+      });
+    }
+  }
+
   // Prebrojavanje
   const brojKosnica = korisnik.kosnice.length;
   const brojAktivnosti = korisnik.aktivnosti.length;
@@ -74,6 +107,7 @@ export default async function ProfilePage() {
     name: korisnik.ime,
     email: korisnik.email,
     role: ulogaMapping[korisnik.uloga] || korisnik.uloga,
+    rawRole: korisnik.uloga,
     joinedDate: joinedDate
   };
 
@@ -86,7 +120,7 @@ export default async function ProfilePage() {
   const notifications = korisnik.notifikacije.map(n => ({
     id: n.id,
     message: n.poruka,
-    activityTitle: n.aktivnost.naslov,
+    activityTitle: n.aktivnost?.naslov ?? null,
     createdAt: n.createdAt
   }));
 

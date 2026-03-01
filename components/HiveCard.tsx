@@ -84,13 +84,13 @@ export default function HiveCard({ hive, onDetailsClick, onHiveUpdated }: HiveCa
             onClick={onDetailsClick}
             className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 rounded-xl transition-colors shadow-md hover:shadow-lg"
           >
-            Detalji
+            Izmeni
           </button>
           <button
             onClick={() => setShowEditModal(true)}
-            className="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold py-3 rounded-xl transition-colors shadow-md hover:shadow-lg"
+            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition-colors shadow-md hover:shadow-lg"
             >
-              Izmeni
+              Detalji
             </button>
         </div>
       </div>

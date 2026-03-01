@@ -2,6 +2,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import PosaljiNotifikaciju from "@/components/PosaljiNotifikaciju";
 
 type ProfileClientProps = {
   user: {
@@ -9,6 +10,7 @@ type ProfileClientProps = {
     name: string;
     email: string;
     role: string;
+    rawRole: string;
     joinedDate: string;
   };
   stats: {
@@ -19,13 +21,14 @@ type ProfileClientProps = {
   notifications: Array<{
     id: number;
     message: string;
-    activityTitle: string;
+    activityTitle?: string | null;
     createdAt: Date;
   }>;
 };
 
 export default function ProfileClient({ user, stats, notifications }: ProfileClientProps) {
   const router = useRouter();
+  const isMenadzer = user.rawRole === "MENADZER";
 
   async function handleLogout() {
     try {
@@ -154,57 +157,6 @@ export default function ProfileClient({ user, stats, notifications }: ProfileCli
               </div>
             </div>
           </Link>
-
-          {/* Notifikacije Card */}
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg border border-purple-200 dark:border-purple-800 overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <div className="text-3xl">🔔</div>
-                    {stats.notifications > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                        {stats.notifications}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                      Notifikacije
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Nepročitane poruke
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {notifications.length > 0 ? (
-                  notifications.map((notif) => (
-                    <div 
-                      key={notif.id}
-                      className="bg-white dark:bg-gray-800 p-3 rounded-lg border border-purple-100 dark:border-purple-900"
-                    >
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
-                        {notif.message}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                        {notif.activityTitle}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 bg-white dark:bg-gray-800 rounded-lg border border-dashed border-purple-200 dark:border-purple-800">
-                    <div className="text-4xl mb-2">📭</div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Nema novih notifikacija
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* DESNA STRANA - Profil info i akcije (1/3 širine) */}

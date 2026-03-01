@@ -106,10 +106,10 @@ model Notifikacija {
   seen      Boolean  @default(false)
 
   korisnikId  Int
-  aktivnostId Int
+  aktivnostId Int?
 
   korisnik  Korisnik  @relation(fields: [korisnikId], references: [id], onDelete: Cascade)
-  aktivnost Aktivnost @relation(fields: [aktivnostId], references: [id], onDelete: Cascade)
+  aktivnost Aktivnost? @relation(fields: [aktivnostId], references: [id], onDelete: Cascade)
 
   @@index([korisnikId])
   @@index([aktivnostId])

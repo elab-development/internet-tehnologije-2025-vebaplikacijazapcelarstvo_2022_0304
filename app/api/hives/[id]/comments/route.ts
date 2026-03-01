@@ -6,7 +6,8 @@ import prisma from '@/lib/prisma';
  */
 export async function GET(
   request: NextRequest,
-  props: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
+
 ) {
   const params = await props.params;
 

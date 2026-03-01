@@ -155,8 +155,7 @@ export default function NotifikacijePanel({ isOpen, onClose }: Props) {
                       }`}
                     >
                       {notif.aktivnost
-                        ? <Image src="/images/aktivnosti.png" alt="Aktivnost" width={20} height={20} />
-                        : <Image src="/images/sticky-notes.png" alt="Aktivnost" width={20} height={20} />}
+                        ? <Image src="/images/???.png" alt="Aktivnost" width={20} height={20} />: "📢"}
                     </div>
 
                     <div className="flex-1 min-w-0">

@@ -1,8 +1,2 @@
-/*
-  Warnings:
-
-  - Added the required column `jacinaKosnice` to the `Komentar` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- AlterTable
-ALTER TABLE `komentar` ADD COLUMN `jacinaKosnice` VARCHAR(191) NOT NULL;
+ALTER TABLE `Komentar` ADD COLUMN `jacinaKosnice` VARCHAR(191) NOT NULL;

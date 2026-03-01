@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
 
 /**
  * GET /api/activities/:id
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const params = await props.params;
   try {
-
     const userId = parseInt(request.headers.get('x-user-id')!);
 
     const aktivnost = await prisma.aktivnost.findFirst({
@@ -20,19 +19,6 @@ export async function GET(
       },
       include: {
         kosnica: true,
-        komentari: {
-          include: {
-            korisnik: {
-              select: {
-                ime: true,
-                email: true,
-              },
-            },
-          },
-          orderBy: {
-            createdAt: 'desc',
-          },
-        },
       },
     });
 
@@ -57,16 +43,13 @@ export async function GET(
 }
 
 /**
- * PUT /api/activities/:id
- */
-/**
  * PUT /api/activities/[id]
- * Ažurira aktivnost
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const params = await props.params;
   try {
     const body = await request.json();
     const { naslov, tip, opis, datumPocetka, izvrsena } = body;
@@ -104,12 +87,12 @@ export async function PUT(
 
 /**
  * DELETE /api/activities/[id]
- * Briše aktivnost
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
+  const params = await props.params;
   try {
     await prisma.aktivnost.delete({
       where: { id: parseInt(params.id) },

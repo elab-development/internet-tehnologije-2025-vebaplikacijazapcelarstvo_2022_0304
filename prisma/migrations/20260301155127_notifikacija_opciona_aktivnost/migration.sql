@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `notifikacija` MODIFY `aktivnostId` INTEGER NULL;
+ALTER TABLE `Notifikacija` MODIFY `aktivnostId` INTEGER NULL;

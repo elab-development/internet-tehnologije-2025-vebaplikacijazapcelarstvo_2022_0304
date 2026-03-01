@@ -1,15 +1,8 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `aktivnostId` on the `komentar` table. All the data in the column will be lost.
-  - Added the required column `kosnicaId` to the `Komentar` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- DropForeignKey
-ALTER TABLE `komentar` DROP FOREIGN KEY `Komentar_aktivnostId_fkey`;
+ALTER TABLE `Komentar` DROP FOREIGN KEY `Komentar_aktivnostId_fkey`;
 
 -- AlterTable
-ALTER TABLE `komentar` DROP COLUMN `aktivnostId`,
+ALTER TABLE `Komentar` DROP COLUMN `aktivnostId`,
     ADD COLUMN `kosnicaId` INTEGER NOT NULL;
 
 -- CreateIndex

@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: pcelarstvo_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: pcelarstvo
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: pcelarstvo_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mysql://root:root1234@db:3306/pcelarstvo
+      JWT_SECRET: ${JWT_SECRET:-promena-ovaj-secret-u-produkciji}
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma@5.22.0 migrate deploy && node server.js"
+
+volumes:
+  db_data:

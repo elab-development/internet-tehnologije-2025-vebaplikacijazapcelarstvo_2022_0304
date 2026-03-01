@@ -7,7 +7,7 @@ import prisma from '@/lib/prisma';
  */
 export async function GET(
   request: NextRequest,
-  props : { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   const params = await props.params;
 
@@ -54,7 +54,7 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  props: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   const params = await props.params;
 
@@ -106,7 +106,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  props: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   const params = await props.params;
   try {

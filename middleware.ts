@@ -11,6 +11,8 @@ export function middleware(request: NextRequest) {
     '/api/comments',
     '/api/auth/me',
     '/api/notifications',
+    '/api/admin',
+    '/api/auth/profile',
   ];
 
   const path = request.nextUrl.pathname;

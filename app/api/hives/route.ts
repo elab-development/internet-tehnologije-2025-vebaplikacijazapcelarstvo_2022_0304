@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const userId = parseInt(request.headers.get('x-user-id')!);
 
     const body = await request.json();
-    const { naziv, brPcela, jacina, brRamova } = body;
+    const { naziv, brPcela, jacina, brRamova, latitude, longitude } = body;
 
     if (!naziv || !brPcela || !jacina || !brRamova) {
       return NextResponse.json(
@@ -71,6 +71,8 @@ export async function POST(request: NextRequest) {
         jacina: jacina.toUpperCase(),
         brRamova: parseInt(brRamova),
         korisnikId: userId,
+        latitude: latitude ?? null, 
+        longitude: longitude ?? null,
       },
     });
 

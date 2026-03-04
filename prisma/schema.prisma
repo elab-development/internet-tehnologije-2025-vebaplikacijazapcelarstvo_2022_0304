@@ -41,6 +41,8 @@ model Kosnica {
   brPcela   Int      // Broj pčela
   jacina    String   @default("srednja")// Jačina košnice (slaba, srednja, jaka)
   brRamova  Int      // Broj ramova
+  latitude  Float?
+  longitude Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -62,7 +62,7 @@ export async function PUT(
     const userId = parseInt(request.headers.get('x-user-id')!);
 
     const body = await request.json();
-    const { naziv, brPcela, jacina, brRamova } = body;
+    const { naziv, brPcela, jacina, brRamova, latitude, longitude } = body;
 
     const kosnica = await prisma.kosnica.findFirst({
       where: {
@@ -85,6 +85,8 @@ export async function PUT(
         ...(brPcela && { brPcela: parseInt(brPcela) }),
         ...(jacina && { jacina: jacina.toUpperCase() }),
         ...(brRamova && { brRamova: parseInt(brRamova) }),
+        ...(latitude !== undefined && { latitude }), 
+        ...(longitude !== undefined && { longitude }),
       },
     });
 

@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const userId = parseInt(request.headers.get('x-user-id')!);
   const korisnik = await prisma.korisnik.findUnique({
     where: { id: userId },
-    select: { id: true, ime: true, email: true },
+    select: { id: true, ime: true, email: true, uloga: true },
   });
   return NextResponse.json({ data: korisnik });
 }

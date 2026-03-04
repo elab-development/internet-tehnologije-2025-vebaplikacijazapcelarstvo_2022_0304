@@ -32,8 +32,11 @@ export default function HomePage() {
       }
 
       // Redirektuj na profil
-      router.push("/profile");
-    } catch (err: any) {
+      if (data.korisnik.uloga === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/profile");
+}    } catch (err: any) {
       console.error("Greška:", err);
       setError("Greška prilikom prijave. Pokušajte ponovo.");
     }

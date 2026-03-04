@@ -16,11 +16,15 @@ type Notifikacija = {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  uloga?: string | null;
 };
 
-export default function NotifikacijePanel({ isOpen, onClose }: Props) {
+export default function NotifikacijePanel({ isOpen, onClose, uloga }: Props) {
   const [notifikacije, setNotifikacije] = useState<Notifikacija[]>([]);
   const [loading, setLoading] = useState(false);
+  const [poruka, setPoruka] = useState("");
+  const [slanjeStatus, setSlanjeStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [slanjeMsg, setSlanjeMsg] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -65,6 +69,31 @@ export default function NotifikacijePanel({ isOpen, onClose }: Props) {
     setNotifikacije((prev) => prev.map((n) => ({ ...n, seen: true })));
   }
 
+  async function handlePosaljiNotifikaciju() {
+    if (!poruka.trim()) return;
+    setSlanjeStatus("loading");
+    try {
+      const res = await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ poruka }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSlanjeStatus("success");
+        setSlanjeMsg(data.message);
+        setPoruka("");
+      } else {
+        setSlanjeStatus("error");
+        setSlanjeMsg(data.error || "Greška pri slanju.");
+      }
+    } catch {
+      setSlanjeStatus("error");
+      setSlanjeMsg("Greška pri slanju.");
+    }
+    setTimeout(() => setSlanjeStatus("idle"), 4000);
+  }
+
   const neprocitane = notifikacije.filter((n) => !n.seen).length;
 
   function formatirajDatum(datum: string) {
@@ -78,15 +107,10 @@ export default function NotifikacijePanel({ isOpen, onClose }: Props) {
 
   return (
     <>
-      {/* Overlay */}
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 z-40"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
       )}
 
-      {/* Panel */}
       <div
         className={`fixed top-0 right-0 h-full w-80 bg-white dark:bg-gray-900 shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -155,7 +179,8 @@ export default function NotifikacijePanel({ isOpen, onClose }: Props) {
                       }`}
                     >
                       {notif.aktivnost
-                        ? <Image src="/images/???.png" alt="Aktivnost" width={20} height={20} />: "📢"}
+                        ? <Image src="/images/aktivnosti.png" alt="Aktivnost" width={20} height={20} />
+                        : <Image src="/images/sticky-notes.png" alt="Obaveštenje" width={20} height={20} />}
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -183,6 +208,41 @@ export default function NotifikacijePanel({ isOpen, onClose }: Props) {
             </div>
           )}
         </div>
+
+        {/* Sekcija za slanje - samo za ADMIN */}
+        {uloga === "MENADZER" && (
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">
+              📢 Pošalji obaveštenje svim korisnicima
+            </p>
+            <textarea
+              value={poruka}
+              onChange={(e) => setPoruka(e.target.value)}
+              maxLength={500}
+              rows={2}
+              placeholder="Unesite poruku..."
+              className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+            />
+            <div className="flex items-center justify-between mt-1 mb-2">
+              <span className="text-xs text-gray-400">{poruka.length}/500</span>
+            </div>
+            {slanjeStatus !== "idle" && (
+              <p className={`text-xs mb-2 font-medium ${
+                slanjeStatus === "success" ? "text-green-600" : 
+                slanjeStatus === "error" ? "text-red-600" : "text-gray-500"
+              }`}>
+                {slanjeStatus === "loading" ? "Slanje..." : slanjeMsg}
+              </p>
+            )}
+            <button
+              onClick={handlePosaljiNotifikaciju}
+              disabled={!poruka.trim() || slanjeStatus === "loading"}
+              className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-2 rounded-lg text-sm transition-colors"
+            >
+              Pošalji
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

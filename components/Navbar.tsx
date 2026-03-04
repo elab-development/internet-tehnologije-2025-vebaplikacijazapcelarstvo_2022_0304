@@ -9,8 +9,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const [panelOtvoren, setPanelOtvoren] = useState(false);
   const [neprocitane, setNeprocitane] = useState(0);
+  const [uloga, setUloga] = useState<string | null>(null);
 
- const links = [
+  const links = [
     { href: "/hives", label: "Košnice", icon: "/images/beehive.png" },
     { href: "/activities", label: "Aktivnosti", icon: "/images/aktivnosti.png" },
     { href: "/profile", label: "Profil", icon: "/images/profile.png" },
@@ -19,7 +20,19 @@ export default function Navbar() {
 
   useEffect(() => {
     fetchBrojNeprocitanih();
+    fetchUloga();
   }, []);
+
+  async function fetchUloga() {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (!res.ok) return;
+      const data = await res.json();
+      setUloga(data.data?.uloga ?? null);
+    } catch {
+      // nije prijavljen
+    }
+  }
 
   async function fetchBrojNeprocitanih() {
     try {
@@ -50,7 +63,7 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center gap-4">
-            <ul className="flex space-x-6">
+            <ul className="flex space-x-4 items-center">
               {links.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -66,9 +79,22 @@ export default function Navbar() {
                   </Link>
                 </li>
               ))}
+
+              {uloga === "ADMIN" && (
+                <li>
+                  <Link
+                    href="/admin"
+                    className={`hover:text-amber-100 transition-colors font-medium flex items-center gap-1 ${
+                      pathname === "/admin" ? "border-b-2 border-white pb-1" : ""
+                    }`}
+                  >
+                    <span>🛠️</span>
+                    Admin
+                  </Link>
+                </li>
+              )}
             </ul>
 
-            {/* Zvonce */}
             <button
               onClick={() => setPanelOtvoren(true)}
               className="relative p-2 hover:bg-white/20 rounded-full transition-colors"
@@ -84,7 +110,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      <NotifikacijePanel isOpen={panelOtvoren} onClose={handleZatvoriPanel} />
+      <NotifikacijePanel isOpen={panelOtvoren} onClose={handleZatvoriPanel} uloga = {uloga}/>
     </>
   );
 }

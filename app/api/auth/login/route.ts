@@ -3,8 +3,57 @@ import prisma from '@/lib/prisma'
 import { comparePassword, createToken } from '@/lib/auth'
 
 /**
- * POST /api/auth/login
- * Prijava korisnika
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Prijava korisnika
+ *     tags: [Autentifikacija]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, sifra]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: korisnik@example.com
+ *               sifra:
+ *                 type: string
+ *                 format: password
+ *                 example: mojalozinka123
+ *     responses:
+ *       200:
+ *         description: Uspešna prijava, JWT token postavljen u HttpOnly cookie
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Uspešno ste se prijavili.
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *                 korisnik:
+ *                   $ref: '#/components/schemas/KorisnikJavni'
+ *       400:
+ *         description: Email ili lozinka nisu uneti
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Pogrešan email ili lozinka
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function POST(request: NextRequest) {
   try {

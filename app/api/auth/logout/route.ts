@@ -1,8 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
- * POST /api/auth/logout
- * Odjava korisnika
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Odjava korisnika
+ *     tags: [Autentifikacija]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Korisnik uspešno odjavljen, JWT cookie obrisan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Uspešno ste se odjavili.
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function POST(request: NextRequest) {
   try {

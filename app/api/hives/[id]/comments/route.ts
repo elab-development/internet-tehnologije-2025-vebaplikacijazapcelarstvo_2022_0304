@@ -2,7 +2,41 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 /**
- * GET /api/hives/:id/comments
+ * @swagger
+ * /api/hives/{id}/comments:
+ *   get:
+ *     summary: Preuzmi sve komentare za košnicu
+ *     tags: [Komentari]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID košnice
+ *     responses:
+ *       200:
+ *         description: Lista komentara uspešno preuzeta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Komentari uspešno preuzeti.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Komentar'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function GET(
   request: NextRequest,

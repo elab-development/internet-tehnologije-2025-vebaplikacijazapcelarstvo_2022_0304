@@ -9,6 +9,64 @@ function requireAdmin(request: NextRequest) {
   return { userId: parseInt(userId), uloga };
 }
 
+
+/**
+ * @swagger
+ * /api/admin/users:
+ *   get:
+ *     summary: Preuzmi listu svih korisnika (samo ADMIN)
+ *     tags: [Admin]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista svih korisnika sa brojem košnica i aktivnosti
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       ime:
+ *                         type: string
+ *                         example: Marko Marković
+ *                       email:
+ *                         type: string
+ *                         example: marko@example.com
+ *                       uloga:
+ *                         type: string
+ *                         enum: [KORISNIK, MENADZER, ADMIN]
+ *                       pol:
+ *                         type: string
+ *                         nullable: true
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       _count:
+ *                         type: object
+ *                         properties:
+ *                           kosnice:
+ *                             type: integer
+ *                             example: 3
+ *                           aktivnosti:
+ *                             type: integer
+ *                             example: 12
+ *       403:
+ *         description: Nemate dozvolu (nije ADMIN)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function GET(request: NextRequest) {
   try {
     const admin = requireAdmin(request);
@@ -41,6 +99,67 @@ export async function GET(request: NextRequest) {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/admin/users:
+ *   patch:
+ *     summary: Izmeni ulogu ili lozinku korisnika (samo ADMIN)
+ *     tags: [Admin]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [id]
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID korisnika kojeg menjamo
+ *                 example: 2
+ *               uloga:
+ *                 type: string
+ *                 enum: [KORISNIK, MENADZER]
+ *                 description: Nova uloga korisnika (ADMIN ne može biti dodeljen)
+ *                 example: MENADZER
+ *               novaSifra:
+ *                 type: string
+ *                 minLength: 6
+ *                 description: Nova lozinka korisnika
+ *                 example: novaLozinka123
+ *     responses:
+ *       200:
+ *         description: Korisnik uspešno ažuriran
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Korisnik uspešno ažuriran.
+ *                 data:
+ *                   $ref: '#/components/schemas/KorisnikJavni'
+ *       400:
+ *         description: Nevalidni podaci ili pokušaj menjanja sopstvenog naloga
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Nemate dozvolu ili pokušaj menjanja drugog admina
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function PATCH(request: NextRequest) {
   try {
     const admin = requireAdmin(request);
@@ -102,6 +221,56 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
+
+
+/**
+ * @swagger
+ * /api/admin/users:
+ *   delete:
+ *     summary: Obriši korisnika (samo ADMIN)
+ *     tags: [Admin]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [id]
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID korisnika kojeg brišemo
+ *                 example: 2
+ *     responses:
+ *       200:
+ *         description: Korisnik uspešno obrisan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Korisnik uspešno obrisan.
+ *       400:
+ *         description: Nedostaje ID ili pokušaj brisanja sopstvenog naloga
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Nemate dozvolu ili pokušaj brisanja drugog admina
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function DELETE(request: NextRequest) {
   try {
     const admin = requireAdmin(request);

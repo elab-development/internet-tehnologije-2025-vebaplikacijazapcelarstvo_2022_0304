@@ -2,6 +2,62 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { comparePassword, hashPassword } from '@/lib/auth';
 
+
+
+/**
+ * @swagger
+ * /api/auth/profile:
+ *   patch:
+ *     summary: Ažuriraj profil prijavljenog korisnika
+ *     tags: [Profil]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pol:
+ *                 type: boolean
+ *                 description: Pol korisnika
+ *                 example: true
+ *               trenutnaSifra:
+ *                 type: string
+ *                 description: Trenutna lozinka (obavezna ako se menja lozinka)
+ *                 example: staraSifra123
+ *               novaSifra:
+ *                 type: string
+ *                 minLength: 6
+ *                 description: Nova lozinka
+ *                 example: novaSifra456
+ *     responses:
+ *       200:
+ *         description: Profil uspešno ažuriran
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Profil uspešno ažuriran.
+ *                 data:
+ *                   $ref: '#/components/schemas/KorisnikJavni'
+ *       400:
+ *         description: Nevalidni podaci (nema šta da se ažurira, pogrešna trenutna lozinka, kratka nova lozinka)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function PATCH(request: NextRequest) {
   try {
     const userId = parseInt(request.headers.get('x-user-id')!);

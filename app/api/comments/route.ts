@@ -2,7 +2,52 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 /**
- * POST /api/comments
+ * @swagger
+ * /api/comments:
+ *   post:
+ *     summary: Dodaj komentar na košnicu
+ *     tags: [Komentari]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [sadrzaj, kosnicaId]
+ *             properties:
+ *               sadrzaj:
+ *                 type: string
+ *                 example: Košnica je u odličnom stanju, puno meda.
+ *               kosnicaId:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       201:
+ *         description: Komentar uspešno dodat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Komentar uspešno dodat.
+ *                 data:
+ *                   $ref: '#/components/schemas/Komentar'
+ *       400:
+ *         description: Nevalidni podaci
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function POST(request: NextRequest) {
   try {

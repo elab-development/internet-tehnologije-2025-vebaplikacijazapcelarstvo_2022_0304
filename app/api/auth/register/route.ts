@@ -3,8 +3,62 @@ import prisma from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth'
 
 /**
- * POST /api/auth/register
- * Registracija novog korisnika
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Registracija novog korisnika
+ *     tags: [Autentifikacija]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [ime, email, sifra]
+ *             properties:
+ *               ime:
+ *                 type: string
+ *                 example: Marko Marković
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: marko@example.com
+ *               sifra:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: mojalozinka123
+ *               uloga:
+ *                 type: string
+ *                 enum: [KORISNIK, MENADZER, ADMIN]
+ *                 default: KORISNIK
+ *                 example: KORISNIK
+ *     responses:
+ *       201:
+ *         description: Korisnik uspešno registrovan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Uspešno ste se registrovali.
+ *                 korisnik:
+ *                   $ref: '#/components/schemas/KorisnikJavni'
+ *       400:
+ *         description: Nevalidni podaci (nedostaju polja, loš email format, kratka lozinka)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       409:
+ *         description: Korisnik sa tim emailom već postoji
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function POST(request: NextRequest) {
   try {

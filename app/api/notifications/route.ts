@@ -15,6 +15,32 @@ function getUserFromRequest(request: NextRequest) {
   return { userId: decoded.userId, uloga: decoded.uloga };
 }
 
+
+/**
+ * @swagger
+ * /api/notifications:
+ *   get:
+ *     summary: Preuzmi sve notifikacije prijavljenog korisnika
+ *     tags: [Notifikacije]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista notifikacija
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Notifikacija'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function GET(request: NextRequest) {
   try {
     const user = getUserFromRequest(request);
@@ -39,6 +65,61 @@ export async function GET(request: NextRequest) {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/notifications:
+ *   post:
+ *     summary: Pošalji notifikaciju svim korisnicima (samo MENADZER)
+ *     tags: [Notifikacije]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [poruka]
+ *             properties:
+ *               poruka:
+ *                 type: string
+ *                 maxLength: 500
+ *                 example: Sezona berbe meda počinje sledeće nedelje.
+ *     responses:
+ *       201:
+ *         description: Notifikacija uspešno poslata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Notifikacija uspešno poslata 5 korisnika.
+ *       400:
+ *         description: Poruka je prazna ili predugačka
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         description: Nemate dozvolu (nije MENADZER)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Nema korisnika kojima se može poslati notifikacija
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function POST(request: NextRequest) {
   try {
     const user = getUserFromRequest(request);
@@ -89,6 +170,42 @@ export async function POST(request: NextRequest) {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/notifications:
+ *   patch:
+ *     summary: Označi notifikaciju kao pročitanu
+ *     tags: [Notifikacije]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [id]
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 example: 3
+ *     responses:
+ *       200:
+ *         description: Notifikacija označena kao pročitana
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Notifikacija označena kao pročitana.
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 export async function PATCH(request: NextRequest) {
   try {
     const user = getUserFromRequest(request);

@@ -2,6 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 
+
+/**
+ * @swagger
+ * /api/activities:
+ *   get:
+ *     summary: Preuzmi sve aktivnosti prijavljenog korisnika
+ *     tags: [Aktivnosti]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista aktivnosti uspešno preuzeta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Aktivnosti uspešno učitane.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Aktivnost'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 /**
  * GET /api/activities
  * Vraća sve aktivnosti za prijavljenog korisnika
@@ -72,6 +101,69 @@ export async function GET(request: NextRequest) {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/activities:
+ *   post:
+ *     summary: Kreiraj novu aktivnost
+ *     tags: [Aktivnosti]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [naslov, tip, opis, datumPocetka, kosnicaId]
+ *             properties:
+ *               naslov:
+ *                 type: string
+ *                 example: Pregled proleće
+ *               tip:
+ *                 type: string
+ *                 example: PREGLED
+ *               opis:
+ *                 type: string
+ *                 example: Redovni prolećni pregled košnice
+ *               datumPocetka:
+ *                 type: string
+ *                 format: date-time
+ *                 example: 2026-04-15T10:00:00Z
+ *               kosnicaId:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       201:
+ *         description: Aktivnost uspešno kreirana
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Aktivnost uspešno kreirana.
+ *                 data:
+ *                   $ref: '#/components/schemas/Aktivnost'
+ *       400:
+ *         description: Nevalidni podaci
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         description: Košnica nije pronađena ili nemate pristup
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 /**
  * POST /api/activities
  * Kreira novu aktivnost

@@ -2,10 +2,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 
+
 /**
- * GET /api/hives
- * Preuzmi sve košnice trenutnog korisnika
+ * @swagger
+ * /api/hives:
+ *   get:
+ *     summary: Preuzmi sve košnice trenutnog korisnika
+ *     tags: [Košnice]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista košnica
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Kosnica'
+ *       401:
+ *         description: Nije autorizovan
  */
+
 export async function GET(request: NextRequest) {
   try {
 
@@ -18,7 +41,6 @@ export async function GET(request: NextRequest) {
       },
       include: {
         aktivnosti: true,
-        // proizvodnjaMeda: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -38,10 +60,43 @@ export async function GET(request: NextRequest) {
   }
 }
 
+
 /**
- * POST /api/hives
- * Kreiranje nove košnice
+ * @swagger
+ * /api/hives:
+ *   post:
+ *     summary: Kreiraj novu košnicu
+ *     tags: [Košnice]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [naziv, brPcela, jacina, brRamova]
+ *             properties:
+ *               naziv:
+ *                 type: string
+ *               brPcela:
+ *                 type: integer
+ *               jacina:
+ *                 type: string
+ *                 enum: [SLABA, SREDNJA, JAKA]
+ *               brRamova:
+ *                 type: integer
+ *               latitude:
+ *                 type: number
+ *               longitude:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Košnica kreirana
+ *       400:
+ *         description: Nevalidni podaci
  */
+
 export async function POST(request: NextRequest) {
   try {
     const userId = parseInt(request.headers.get('x-user-id')!);

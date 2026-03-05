@@ -2,7 +2,39 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 /**
- * GET /api/activities/:id
+ * @swagger
+ * /api/activities/{id}:
+ *   get:
+ *     summary: Preuzmi jednu aktivnost po ID-u
+ *     tags: [Aktivnosti]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID aktivnosti
+ *     responses:
+ *       200:
+ *         description: Aktivnost uspešno preuzeta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Aktivnost uspešno preuzeta.
+ *                 data:
+ *                   $ref: '#/components/schemas/Aktivnost'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function GET(
   request: NextRequest,
@@ -42,8 +74,70 @@ export async function GET(
   }
 }
 
+
+
 /**
- * PUT /api/activities/[id]
+ * @swagger
+ * /api/activities/{id}:
+ *   put:
+ *     summary: Izmeni postojeću aktivnost
+ *     tags: [Aktivnosti]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID aktivnosti
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [naslov, tip, opis, datumPocetka]
+ *             properties:
+ *               naslov:
+ *                 type: string
+ *                 example: Pregled jesen
+ *               tip:
+ *                 type: string
+ *                 example: PREGLED
+ *               opis:
+ *                 type: string
+ *                 example: Jesenji pregled košnice
+ *               datumPocetka:
+ *                 type: string
+ *                 format: date-time
+ *                 example: 2026-09-10T09:00:00Z
+ *               izvrsena:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Aktivnost uspešno ažurirana
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Aktivnost uspešno ažurirana
+ *                 aktivnost:
+ *                   $ref: '#/components/schemas/Aktivnost'
+ *       400:
+ *         description: Nevalidni podaci
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function PUT(
   request: NextRequest,
@@ -86,7 +180,35 @@ export async function PUT(
 }
 
 /**
- * DELETE /api/activities/[id]
+ * @swagger
+ * /api/activities/{id}:
+ *   delete:
+ *     summary: Obriši aktivnost
+ *     tags: [Aktivnosti]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID aktivnosti
+ *     responses:
+ *       200:
+ *         description: Aktivnost uspešno obrisana
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Aktivnost uspešno obrisana
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
  */
 export async function DELETE(
   request: NextRequest,

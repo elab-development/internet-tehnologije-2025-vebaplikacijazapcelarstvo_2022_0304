@@ -41,19 +41,12 @@ Aplikacija je namenjena pčelarima za digitalno upravljanje košnicama, praćenj
 
 **1. Kloniranje repozitorijuma:**
 ```bash
-git clone https://github.com/username/pcelarstvo.git
-cd pcelarstvo
+git clone https://github.com/elab-development/internet-tehnologije-2025-vebaplikacijazapcelarstvo_2022_0304.git
 ```
 
 **2. Kreiranje `.env` fajla sa potrebnim varijablama:**
 ```env
-# Lokalno pokretanje:
-DATABASE_URL=mysql://root:root1234@localhost:3306/pcelarstvo
-
-# Ako pokrećeš oba servisa u Dockeru:
-# DATABASE_URL=mysql://root:root1234@db:3306/pcelarstvo
-
-# Tajni ključ za JWT — obavezno promeni u produkciji!
+DATABASE_URL=mysql://root:root1234@db:3306/pcelarstvo
 JWT_SECRET=promeni-ovo-u-produkciji-minimum-32-karaktera
 ```
 

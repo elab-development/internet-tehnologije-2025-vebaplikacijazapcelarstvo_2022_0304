@@ -69,21 +69,3 @@ Aplikacija će biti dostupna na: **http://localhost:3000**
 Dockerfile    - Multi-stage build za Next.js aplikaciju
 docker-compose.yml - Definisanje servisa: app, db
 ```
-
-## Git grane
-
-Za razvoj projekta korišćena je Git strategija sa glavnom, integracionom i feature granama. Svaka grana ima specifičnu ulogu u razvoju i omogućava paralelan rad na različitim funkcionalnostima.
-
-**`main`** — stabilna, produkciona verzija projekta. Sadrži samo testiran i integrisan kod spreman za deployment.
-
-**`develop`** — integraciona grana u koju se spajaju sve feature grane. Ova grana predstavlja radnu verziju projekta pre spajanja u main.
-
-**`feature/auth`** — grana namenjena implementaciji autentifikacije. Sadrži registraciju, prijavu, JWT tokene i zaštitu ruta. Nakon testiranja i potvrde da autentifikacija funkcioniše, ova grana se spaja u develop.
-
-**`feature/hives`** — grana za implementaciju upravljanja košnicama. Sadrži CRUD operacije za košnice, komentare i aktivnosti. Nakon validacije se spaja u develop.
-
-**`feature/dashboard`** — grana za statistike i vizualizaciju. Sadrži grafikone aktivnosti po tipu i mesecu, interaktivnu mapu košnica i vremensku prognozu. Nakon testiranja se spaja u develop.
-
-**`feature/docker`** — grana namenjena implementaciji Docker podrške. Sadrži Dockerfile, .dockerignore i docker-compose.yml. Nakon testiranja i potvrde da kontejnerizacija funkcioniše, ova grana se spaja u develop.
-
-**`feature/tests`** — grana za automatizovane testove. Sadrži folder `__tests__` sa test fajlovima za API rute i komponente. Testovi se pokreću kroz CI/CD pipeline i nakon validacije se spajaju u develop.

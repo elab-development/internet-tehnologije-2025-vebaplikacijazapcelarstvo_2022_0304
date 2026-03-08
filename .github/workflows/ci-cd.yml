@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+
+  # ── JOB 1: Testovi ─────────────────────────────────────────
+  test:
+    name: Pokreni testove
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout koda
+        uses: actions/checkout@v4
+
+      - name: Podesi Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instaliraj zavisnosti
+        run: npm ci
+
+      - name: Pokreni testove
+        run: npm test
+        env:
+          JWT_SECRET: test-secret-za-testove
+
+
+  # ── JOB 2: Build i push Docker image ───────────────────────
+  docker:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout koda
+        uses: actions/checkout@v4
+
+      - name: Prijava na Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build i push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/pcelarstvo:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/pcelarstvo:${{ github.sha }}

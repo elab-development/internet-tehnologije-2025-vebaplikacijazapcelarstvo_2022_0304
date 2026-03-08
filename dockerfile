@@ -4,7 +4,7 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 # ─── Faza 2: Build aplikacije ─────────────────────────────────────────────────
 FROM node:20-alpine AS builder

@@ -47,36 +47,6 @@ export function ActivitiesBarChart({ data }: { data: ActivityStats[] }) {
   );
 }
 
-// Chart za distribuciju aktivnosti (Pie Chart)
-// export function ActivitiesPieChart({ data }: { data: ActivityStats[] }) {
-//   const COLORS = data.map(d => d.boja);
-
-//   return (
-//     <div className="w-full h-[300px]">
-//       <ResponsiveContainer width="100%" height="100%">
-//         <PieChart>
-//           <Pie
-//             data={data}
-//             cx="50%"
-//             cy="50%"
-//             labelLine={false}
-//             label={({ tip, broj }) => `${tip}: ${broj}`}
-//             outerRadius={80}
-//             fill="#8884d8"
-//             dataKey="broj"
-//           >
-//             {data.map((entry, index) => (
-//               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-//             ))}
-//           </Pie>
-//           <Tooltip />
-//           <Legend />
-//         </PieChart>
-//       </ResponsiveContainer>
-//     </div>
-//   );
-// }
-
 // Chart za aktivnosti po mesecima (Line Chart)
 type MonthlyStats = {
   mesec: string;

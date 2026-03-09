@@ -42,14 +42,8 @@ export default function StatisticsPage() {
 
   async function fetchActivities() {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
       const response = await fetch("/api/activities", {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
 
       if (response.ok) {

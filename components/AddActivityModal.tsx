@@ -32,9 +32,8 @@ export default function AddActivityModal({ show, onClose, onSuccess }: AddActivi
 
   async function fetchHives() {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/hives", {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await fetch("/api/activities", {
+      credentials: "include", // ovo šalje cookie automatski
       });
 
       if (response.ok) {

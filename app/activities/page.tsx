@@ -47,18 +47,8 @@ export default function ActivitiesPage() {
   async function fetchActivities() {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setError("Morate biti prijavljeni da biste videli aktivnosti.");
-        setLoading(false);
-        return;
-      }
-
       const response = await fetch("/api/activities", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include", // ovo šalje cookie automatski
       });
 
       if (!response.ok) {

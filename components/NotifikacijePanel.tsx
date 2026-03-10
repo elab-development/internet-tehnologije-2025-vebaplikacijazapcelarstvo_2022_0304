@@ -73,9 +73,13 @@ export default function NotifikacijePanel({ isOpen, onClose, uloga }: Props) {
     if (!poruka.trim()) return;
     setSlanjeStatus("loading");
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch("/api/notifications", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ poruka }),
       });
       const data = await res.json();

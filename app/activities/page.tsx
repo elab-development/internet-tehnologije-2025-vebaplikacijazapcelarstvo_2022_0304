@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import ActivityCalendar from "@/components/KalendarAktivnosti";
 import AddActivityModal from "@/components/AddActivityModal";
 
@@ -48,7 +49,7 @@ export default function ActivitiesPage() {
     try {
       setLoading(true);
       const response = await fetch("/api/activities", {
-        credentials: "include", // ovo šalje cookie automatski
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -101,15 +102,26 @@ export default function ActivitiesPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-          Aktivnosti
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Planirajte i pratite sve aktivnosti vezane za vaše košnice
-        </p>
+      <div className="flex items-center justify-between mb-6 md:mb-8">
+        <div>
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-1">
+            Aktivnosti
+          </h1>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
+            Planirajte i pratite sve aktivnosti vezane za vaše košnice
+          </p>
+        </div>
+        {/* Dugme na desktopu u headeru, na mobilnom fiksno dole */}
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="hidden md:flex bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg 
+                     transition-all shadow-lg hover:shadow-xl items-center gap-2"
+        >
+          <span className="text-xl">+</span>
+          <span>Nova aktivnost</span>
+        </button>
       </div>
 
       {/* Error poruka */}
@@ -120,88 +132,49 @@ export default function ActivitiesPage() {
         </div>
       )}
 
-      {/* Filter dugmad */}
-      <div className="mb-6 flex gap-2 flex-wrap">
-        <button
-          onClick={() => setFilterType("sve")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            filterType === "sve"
-              ? "bg-amber-500 text-white shadow-md"
-              : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-          }`}
-        >
-          Sve ({activities.length})
-        </button>
-        <button
-          onClick={() => setFilterType("pregled")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            filterType === "pregled"
-              ? "bg-amber-500 text-white shadow-md"
-              : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-          }`}
-        >
-          Pregledi
-        </button>
-        <button
-          onClick={() => setFilterType("berba")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            filterType === "berba"
-              ? "bg-amber-500 text-white shadow-md"
-              : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-          }`}
-        >
-          Berba
-        </button>
-        <button
-          onClick={() => setFilterType("hranjenje")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            filterType === "hranjenje"
-              ? "bg-amber-500 text-white shadow-md"
-              : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-          }`}
-        >
-          Hranjenje
-        </button>
-        <button
-          onClick={() => setFilterType("tretman")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            filterType === "tretman"
-              ? "bg-amber-500 text-white shadow-md"
-              : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-          }`}
-        >
-          Tretmani
-        </button>
+      {/* Filter dugmad — horizontalni scroll na mobilnom */}
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        {[
+          { key: "sve", label: `Sve (${activities.length})` },
+          { key: "pregled", label: "Pregledi" },
+          { key: "berba", label: "Berba" },
+          { key: "hranjenje", label: "Hranjenje" },
+          { key: "tretman", label: "Tretmani" },
+        ].map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setFilterType(f.key)}
+            className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+              filterType === f.key
+                ? "bg-amber-500 text-white shadow-md"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
 
-      {/* Kalendar i dugme za dodavanje */}
+      {/* Kalendar */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            📅 Kalendar aktivnosti
-          </h2>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg 
-                       transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-          >
-            <span className="text-xl">+</span>
-            <span>Nova aktivnost</span>
-          </button>
+        <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Image src="/images/aktivnosti.png" alt="Aktivnosti" width={28} height={28} />
+          Kalendar aktivnosti
+        </h2>
+        <div className="overflow-x-auto">
+          <ActivityCalendar
+            activities={filteredActivities}
+            onEventClick={(id) => {
+              console.log("Kliknuta aktivnost ID:", id);
+            }}
+          />
         </div>
-
-        <ActivityCalendar
-          activities={filteredActivities}
-          onEventClick={(id) => {
-            console.log("Kliknuta aktivnost ID:", id);
-          }}
-        />
       </div>
 
       {/* Lista aktivnosti */}
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-          📋 Lista aktivnosti
+      <div className="mb-20 md:mb-4">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+          Lista aktivnosti
         </h2>
 
         {filteredActivities.length === 0 ? (
@@ -215,7 +188,7 @@ export default function ActivitiesPage() {
             {filteredActivities.map((activity) => (
               <div
                 key={activity.id}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-5 hover:shadow-lg transition-shadow"
               >
                 {/* Status badge */}
                 <div className="flex items-center justify-between mb-3">
@@ -231,7 +204,7 @@ export default function ActivitiesPage() {
                 </div>
 
                 {/* Naslov */}
-                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">
+                <h3 className="text-base md:text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">
                   {activity.naslov}
                 </h3>
 
@@ -270,6 +243,17 @@ export default function ActivitiesPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Fiksno dugme na mobilnom */}
+      <div className="fixed bottom-6 right-6 md:hidden z-40">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="bg-amber-500 hover:bg-amber-600 text-white font-bold w-14 h-14 rounded-full 
+                     shadow-xl flex items-center justify-center text-3xl transition-all active:scale-95"
+        >
+          +
+        </button>
       </div>
 
       {/* Modal za dodavanje aktivnosti */}

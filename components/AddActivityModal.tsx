@@ -32,7 +32,7 @@ export default function AddActivityModal({ show, onClose, onSuccess }: AddActivi
 
   async function fetchHives() {
     try {
-      const response = await fetch("/api/activities", {
+      const response = await fetch("/api/hives", {
       credentials: "include", // ovo šalje cookie automatski
       });
 

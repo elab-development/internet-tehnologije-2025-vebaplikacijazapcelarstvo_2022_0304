@@ -68,7 +68,7 @@ export default function HomePage() {
             </label>
             <input
               type="email"
-              placeholder="Unesite email"
+              placeholder="Unesit       e email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all"
